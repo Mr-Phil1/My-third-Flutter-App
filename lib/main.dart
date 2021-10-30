@@ -15,9 +15,47 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home:
+          buildDrawerExample(), // MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
+}
+
+Widget buildDrawerExample() {
+  final drawerElements = ListView(
+    children: [
+      UserAccountsDrawerHeader(
+          accountName: Text("Mr. Phil"),
+          accountEmail: Text("Danke fürs Zusehen :)"),
+          currentAccountPicture: const CircularProgressIndicator(backgroundColor: Colors.black,),),
+      ListTile(
+        title: Text("Dashboard"),
+        onTap: () {
+          print("Tapped");
+        },
+      ),
+      Divider(),
+      ListTile(
+        title: Text("Impressum"),
+      ),
+    ],
+  );
+  return Scaffold(
+    appBar: AppBar(
+      title: Text("Nav Bar Example"),
+    ),
+    body: Center(
+      child: InkWell(
+        onTap: (){
+          print("Inkwell");
+        },
+        child: Text("Draw me!"),
+      )
+    ),
+    drawer: Drawer(
+      child: drawerElements,
+    ),
+  );
 }
 
 class MyHomePage extends StatefulWidget {
@@ -65,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 setState(() {
                   items.removeAt(index);
                 });
-                String msg="";
+                String msg = "";
                 if (direction == DismissDirection.startToEnd) {
                   msg = "deleted";
                 } else if (direction == DismissDirection.endToStart) {
