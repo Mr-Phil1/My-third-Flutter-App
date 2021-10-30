@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -29,58 +30,55 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  final items = List<String>.generate(20, (i) => "Eintrag ${i + 1}");
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            MyButton(_counter),
-          ],
+    const title = 'Delete Me';
+    return MaterialApp(
+      title: title,
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(title),
+        ),
+        body: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return Dismissible(
+              key: Key(item),
+              child: ListTile(title: Text('$item')),
+              background: Container(
+                color: Colors.red,
+                child: const Icon(Icons.delete),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.only(left: 30),
+              ),
+              secondaryBackground: Container(
+                color: Colors.green,
+                child: const Icon(Icons.save),
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.only(right: 30),
+              ),
+              onDismissed: (direction) {
+                setState(() {
+                  items.removeAt(index);
+                });
+                String msg="";
+                if (direction == DismissDirection.startToEnd) {
+                  msg = "deleted";
+                } else if (direction == DismissDirection.endToStart) {
+                  msg = "saved";
+                }
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("$item $msg."),
+                ));
+              },
+            );
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
     );
-  }
-}
-
-class MyButton extends StatelessWidget {
-final int counter;
-MyButton(int this.counter);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Diese Zahl ist kleiner als Drölf."),
-          ));
-        },
-        child: Container(
-          padding: EdgeInsets.all(12),
-          child: Text(
-            '$counter',
-            style: Theme.of(context).textTheme.headline4,
-          ),
-        ));
   }
 }
