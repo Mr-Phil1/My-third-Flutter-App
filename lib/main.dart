@@ -57,37 +57,39 @@ class _DrawerExampleState extends State<DrawerExample> with RestorationMixin {
         ),
       ],
     );
+    var bottomNavBarItems = const [
+      BottomNavigationBarItem(icon: Icon(Icons.account_box), label: 'Account'),
+      BottomNavigationBarItem(icon: Icon(Icons.access_alarm), label: 'Alarm'),
+      BottomNavigationBarItem(icon: Icon(Icons.last_page), label: 'Last Page'),
+    ];
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Nav Bar Example"),
-      ),
-      body: Center(
+        appBar: AppBar(
+          title: Text("Nav Bar Example"),
+        ),
+        body: Center(
           child: InkWell(
-        onTap: () {
-          print("Inkwell");
-        },
-        child: Text("Draw me!"),
-      )),
-      drawer: Drawer(
-        child: drawerElements,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.account_box), label: 'Account'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.access_alarm), label: 'Alarm')
-        ],
-        currentIndex: _currentIndex.value,
-        onTap: (index) {
-          setState(() {
-            _currentIndex.value = index;
-          });
-        },
-        backgroundColor: Colors.red,
-      ),
-    );
+            onTap: () {
+              print("Inkwell");
+            },
+            child: Center(
+                child: _MyBottomNavView(
+                    key: UniqueKey(),
+                    item: bottomNavBarItems[_currentIndex.value])),
+          ),
+        ),
+        drawer: Drawer(
+          child: drawerElements,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          showUnselectedLabels: false,
+          items: bottomNavBarItems,
+          currentIndex: _currentIndex.value,
+          onTap: (index) {
+            setState(() {
+              _currentIndex.value = index;
+            });
+          },
+        ));
   }
 
   @override
@@ -96,6 +98,16 @@ class _DrawerExampleState extends State<DrawerExample> with RestorationMixin {
   @override
   void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
     registerForRestoration(_currentIndex, 'bottom_navigation_tab_index');
+  }
+}
+
+class _MyBottomNavView extends StatelessWidget {
+  _MyBottomNavView({Key? key, required this.item}) : super(key: key);
+
+  final BottomNavigationBarItem item;
+  @override
+  Widget build(BuildContext context) {
+    return Text(item.label as String);
   }
 }
 
@@ -119,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
       theme: ThemeData(primarySwatch: Colors.blue),
       home: Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: const Text(title),
         ),
         body: ListView.builder(
           itemCount: items.length,
