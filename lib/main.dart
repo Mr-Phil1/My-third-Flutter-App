@@ -15,47 +15,88 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home:
-          buildDrawerExample(), // MyHomePage(title: 'Flutter Demo Home Page'),
+      home: DrawerExample(
+        restorationId: '0',
+      ), // MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-Widget buildDrawerExample() {
-  final drawerElements = ListView(
-    children: [
-      UserAccountsDrawerHeader(
+class DrawerExample extends StatefulWidget {
+  const DrawerExample({Key? key, required this.restorationId})
+      : super(key: key);
+  final String restorationId;
+
+  @override
+  State<StatefulWidget> createState() => _DrawerExampleState();
+}
+
+class _DrawerExampleState extends State<DrawerExample> with RestorationMixin {
+  final RestorableInt _currentIndex = RestorableInt(0);
+
+  @override
+  Widget build(BuildContext context) {
+    final drawerElements = ListView(
+      children: [
+        UserAccountsDrawerHeader(
           accountName: Text("Mr. Phil"),
           accountEmail: Text("Danke fürs Zusehen :)"),
-          currentAccountPicture: const CircularProgressIndicator(backgroundColor: Colors.black,),),
-      ListTile(
-        title: Text("Dashboard"),
+          currentAccountPicture: const CircularProgressIndicator(
+            backgroundColor: Colors.black,
+          ),
+        ),
+        ListTile(
+          title: Text("Dashboard"),
+          onTap: () {
+            print("Tapped");
+          },
+        ),
+        Divider(),
+        ListTile(
+          title: Text("Impressum"),
+        ),
+      ],
+    );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Nav Bar Example"),
+      ),
+      body: Center(
+          child: InkWell(
         onTap: () {
-          print("Tapped");
-        },
-      ),
-      Divider(),
-      ListTile(
-        title: Text("Impressum"),
-      ),
-    ],
-  );
-  return Scaffold(
-    appBar: AppBar(
-      title: Text("Nav Bar Example"),
-    ),
-    body: Center(
-      child: InkWell(
-        onTap: (){
           print("Inkwell");
         },
         child: Text("Draw me!"),
-      )
-    ),
-    drawer: Drawer(
-      child: drawerElements,
-    ),
-  );
+      )),
+      drawer: Drawer(
+        child: drawerElements,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_box), label: 'Account'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.access_alarm), label: 'Alarm')
+        ],
+        currentIndex: _currentIndex.value,
+        onTap: (index) {
+          setState(() {
+            _currentIndex.value = index;
+          });
+        },
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  @override
+  String? get restorationId => widget.restorationId;
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_currentIndex, 'bottom_navigation_tab_index');
+  }
 }
 
 class MyHomePage extends StatefulWidget {
