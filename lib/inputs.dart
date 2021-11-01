@@ -38,6 +38,18 @@ class MyInputDemoState extends State<MyInputDemo> {
     return null;
   }
 
+  final banner = MaterialBanner(
+    content: Text("Du bist ausgelogt"),
+    actions: [
+      TextButton(
+        onPressed: () {
+          print("do stuff");
+        },
+        child: Text("Anmelden"),
+      ),
+    ],
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,6 +61,7 @@ class MyInputDemoState extends State<MyInputDemo> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               children: [
+                banner,
                 TextFormField(
                   decoration: const InputDecoration(
                     icon: Icon(Icons.email),
