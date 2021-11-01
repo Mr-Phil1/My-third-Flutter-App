@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/Tabbar.dart';
 
 class InputDemo extends StatelessWidget {
   const InputDemo({Key? key}) : super(key: key);
@@ -95,7 +96,22 @@ class MyInputDemoState extends State<MyInputDemo> {
     } else {
       form.save();
       print(email.email);
+      Navigator.of(context).push(_createRoute());
     }
+  }
+
+  Route<Object?> _createRoute() {
+    return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => TabBarDemo(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          Animatable<Offset> animatible =
+              Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                  .chain(CurveTween(curve: Curves.ease));
+          return SlideTransition(
+            position: animation.drive(animatible),
+            child: child,
+          );
+        });
   }
 }
 
