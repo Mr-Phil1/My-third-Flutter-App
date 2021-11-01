@@ -23,6 +23,8 @@ class MyInputDemo extends StatefulWidget {
 class MyInputDemoState extends State<MyInputDemo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  EmailData email = EmailData();
+
   AutovalidateMode _autoValidate = AutovalidateMode.disabled;
 
   String? _validateEmail(String? value) {
@@ -53,7 +55,7 @@ class MyInputDemoState extends State<MyInputDemo> {
                     hintText: 'Deine E-Mail-Adresse',
                     labelText: ' E-Mail-Adresse',
                   ),
-                  onSaved: (value) => print(value),
+                  onSaved: (value) => email.email = value!,
                   validator: (value) => _validateEmail(value),
                   keyboardType: TextInputType.emailAddress,
                   maxLength: 100,
@@ -77,6 +79,13 @@ class MyInputDemoState extends State<MyInputDemo> {
     final form = _formKey.currentState;
     if (!form!.validate()) {
       _autoValidate = AutovalidateMode.always;
+    } else {
+      form.save();
+      print(email.email);
     }
   }
+}
+
+class EmailData {
+  String email = "";
 }
