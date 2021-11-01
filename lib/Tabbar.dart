@@ -1,8 +1,14 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app/main.dart';
 
-class TabBarDemo extends StatelessWidget {
-  const TabBarDemo({Key? key}) : super(key: key);
+class TabBarDemo extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => TabBarDemoState();
+}
 
+class TabBarDemoState extends State<TabBarDemo> {
   @override
   Widget build(BuildContext context) {
     final tabs = [
@@ -40,13 +46,33 @@ class TabBarDemo extends StatelessWidget {
         ),
         bottomNavigationBar: _MyAppBar(),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => print("FAB"),
+          onPressed: _handleSubmitButton,
           child: Icon(Icons.add),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
     );
   }
+
+  void _handleSubmitButton() {
+    Navigator.of(context).push(_createRoute());
+  }
+}
+
+Route<Object?> _createRoute() {
+  return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => DrawerExample(
+            restorationId: '0',
+          ),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        Animatable<Offset> animatible =
+            Tween(begin: Offset(0.0, 1.0), end: Offset.zero)
+                .chain(CurveTween(curve: Curves.ease));
+        return SlideTransition(
+          position: animation.drive(animatible),
+          child: child,
+        );
+      });
 }
 
 class _MyAppBar extends StatelessWidget {
