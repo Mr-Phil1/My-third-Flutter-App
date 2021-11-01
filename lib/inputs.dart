@@ -23,10 +23,24 @@ class MyInputDemo extends StatefulWidget {
 class MyInputDemoState extends State<MyInputDemo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  AutovalidateMode _autoValidate = AutovalidateMode.disabled;
+
+  String? _validateEmail(String? value) {
+    final emailExp = RegExp(r'^[A-Za-z0-9.-]+@[A-Za-z0-9.-]+\.[a-zA-Z]+$');
+    if (value!.isEmpty) {
+      return "Email ist verpflichtend";
+    }
+    if (!emailExp.hasMatch(value)) {
+      return "Ungültige Email";
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
+        autovalidateMode: _autoValidate,
         key: _formKey,
         child: Scrollbar(
           child: SingleChildScrollView(
@@ -40,9 +54,7 @@ class MyInputDemoState extends State<MyInputDemo> {
                     labelText: ' E-Mail-Adresse',
                   ),
                   onSaved: (value) => print(value),
-                  validator: (value) {
-                    return null;
-                  },
+                  validator: (value) => _validateEmail(value),
                   keyboardType: TextInputType.emailAddress,
                   maxLength: 100,
                   maxLengthEnforcement: MaxLengthEnforcement.enforced,
@@ -61,5 +73,10 @@ class MyInputDemoState extends State<MyInputDemo> {
     );
   }
 
-  void _handleSubmitButton() {}
+  void _handleSubmitButton() {
+    final form = _formKey.currentState;
+    if (!form!.validate()) {
+      _autoValidate = AutovalidateMode.always;
+    }
+  }
 }
