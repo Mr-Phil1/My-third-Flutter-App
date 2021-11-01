@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputDemo extends StatelessWidget {
   const InputDemo({Key? key}) : super(key: key);
@@ -33,12 +34,25 @@ class MyInputDemoState extends State<MyInputDemo> {
             child: Column(
               children: [
                 TextFormField(
-                  decoration: InputDecoration(
-                    icon: const Icon(Icons.email),
+                  decoration: const InputDecoration(
+                    icon: Icon(Icons.email),
                     hintText: 'Deine E-Mail-Adresse',
                     labelText: ' E-Mail-Adresse',
                   ),
+                  onSaved: (value) => print(value),
+                  validator: (value) {
+                    return null;
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                  maxLength: 100,
+                  maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 ),
+                Center(
+                  child: ElevatedButton(
+                    child: Text("Sendem"),
+                    onPressed: _handleSubmitButton,
+                  ),
+                )
               ],
             ),
           ),
@@ -46,4 +60,6 @@ class MyInputDemoState extends State<MyInputDemo> {
       ),
     );
   }
+
+  void _handleSubmitButton() {}
 }
